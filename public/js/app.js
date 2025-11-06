@@ -6,7 +6,7 @@ const state = {
   scanHistory: [],
   ports: [],
   currentHost: null,
-  theme: localStorage.getItem('theme') || 'light'
+  theme: localStorage.getItem('theme') || 'dark' // default to dark/futuristic
 };
 
 // DOM Elements
@@ -44,11 +44,22 @@ const elements = {
 
 // Initialize app
 function init() {
+  // Apply default theme and futuristic styling
   applyTheme(state.theme);
+  document.documentElement.classList.add('futuristic-mode');
+
   loadSettings();
   setupEventListeners();
   loadScanHistory();
   checkNmapStatus();
+
+  // Keyboard shortcuts: T = theme, S = focus targets, H = help
+  window.addEventListener('keydown', (e) => {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+    if (e.key.toLowerCase() === 't') toggleTheme();
+    if (e.key.toLowerCase() === 's') elements.targetInput.focus();
+    if (e.key.toLowerCase() === 'h') openHelp();
+  });
 }
 
 // Event Listeners
@@ -102,7 +113,7 @@ function setupEventListeners() {
   });
 }
 
-// API Functions
+// API Functions (unchanged)
 async function runScan(targets, mode) {
   try {
     const response = await fetch('/api/scan/run', {
@@ -195,7 +206,7 @@ async function exportXml(xml) {
   }
 }
 
-// Scan Functions
+// Scan Functions (unchanged core logic)
 function startScan(mode) {
   const targets = elements.targetInput.value.trim();
 
@@ -220,7 +231,7 @@ function startScan(mode) {
       if (result.error) {
         showMessage(`Error: ${result.error}`, 'error');
         appendLog(`ERROR: ${result.error}`, 'error');
-        setLed('red');
+        setLed('down');
       } else if (result.xml) {
         state.lastXml = result.xml;
         appendLog(`Scan completed: ${result.file}`, 'success');
@@ -238,7 +249,7 @@ function startScan(mode) {
     .catch((error) => {
       showMessage(`Scan failed: ${error.message}`, 'error');
       appendLog(`EXCEPTION: ${error.message}`, 'error');
-      setLed('red');
+      setLed('down');
     })
     .finally(() => {
       state.scanning = false;
@@ -251,24 +262,29 @@ function startScan(mode) {
 function displayResults(parsed, targets, mode) {
   if (!parsed.hosts || parsed.hosts.length === 0) {
     appendLog('No hosts found', 'warning');
-    setLed('red');
+    setLed('down');
     return;
   }
 
   const host = parsed.hosts[0];
   state.currentHost = host;
 
-  // Update LED
+  // Update LED with glow styling
   setLed(host.state === 'up' ? 'up' : 'down');
 
   // Update labels
-  elements.hostLabel.textContent = `Host: ${host.address || '-'} (${host.state})`;
-  elements.macLabel.textContent = `MAC: ${host.mac || '-'}${host.macVendor ? ` (${host.macVendor})` : ''}`;
+  elements.hostLabel.textContent = `Host: ${host.address || '-' } (${host.state})`;
+  elements.macLabel.textContent = `MAC: ${host.mac || '-'}`;
+  document.getElementById('macVendor').textContent = host.macVendor ? host.macVendor : 'Vendor: -';
   elements.osLabel.textContent = `OS: ${host.osGuess || '-'}`;
 
   // Display ports
   state.ports = host.ports || [];
   displayPorts(state.ports);
+
+  // Update small stats
+  document.getElementById('portsFound').textContent = state.ports.length || 0;
+  document.getElementById('lastScanTime').textContent = new Date().toLocaleTimeString();
 
   // Log summary
   appendLog('--- Scan Summary ---', 'success');
@@ -279,7 +295,7 @@ function displayResults(parsed, targets, mode) {
   if (host.osGuess) {
     appendLog(`OS: ${host.osGuess}`, 'success');
   }
-  appendLog(`Ports found: ${host.ports ? host.ports.length : 0}`, 'success');
+  appendLog(`Ports found: ${state.ports.length}`, 'success');
 }
 
 function displayPorts(ports) {
@@ -320,13 +336,15 @@ function generateSummary(parsed) {
 function clearResults() {
   elements.portsBody.innerHTML = '';
   elements.logContainer.innerHTML = '<p class="log-empty">Logs will appear here...</p>';
-  setLed('gray');
+  setLed('neutral');
   elements.hostLabel.textContent = 'Host: -';
   elements.macLabel.textContent = 'MAC: -';
   elements.osLabel.textContent = 'OS: -';
   state.lastXml = null;
   state.ports = [];
   state.currentHost = null;
+  document.getElementById('portsFound').textContent = '—';
+  document.getElementById('lastScanTime').textContent = '—';
 }
 
 function appendLog(text, type = 'info') {
@@ -343,7 +361,15 @@ function appendLog(text, type = 'info') {
 }
 
 function setLed(color) {
-  elements.statusLed.className = `led ${color}`;
+  // color: 'up', 'down', 'neutral'
+  elements.statusLed.classList.remove('up','down','neutral','led-glow');
+  if (color === 'up') {
+    elements.statusLed.classList.add('up','led-glow');
+  } else if (color === 'down') {
+    elements.statusLed.classList.add('down');
+  } else {
+    elements.statusLed.classList.add('neutral');
+  }
 }
 
 function updateStatus(text) {
@@ -489,13 +515,19 @@ function refreshHistoryList() {
     return;
   }
 
+  // Render compact history items for narrow column
   state.scanHistory.forEach((entry) => {
     const item = document.createElement('div');
     item.className = 'history-item';
+    const time = new Date(entry.timestamp).toLocaleString();
     item.innerHTML = `
-      <div class="history-time">${new Date(entry.timestamp).toLocaleString()}</div>
-      <div class="history-targets"><strong>${entry.targets}</strong></div>
-      <div class="history-summary">${entry.summary}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div style="min-width:0;">
+          <div style="font-weight:800; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${entry.targets}</div>
+          <div style="font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${entry.summary}</div>
+        </div>
+        <div style="margin-left:8px; text-align:right; font-size:11px; color:var(--muted)">${time.split(',')[0]}</div>
+      </div>
     `;
     item.addEventListener('click', () => loadHistoryScan(entry.id));
     elements.historyList.appendChild(item);
@@ -517,7 +549,7 @@ function loadHistoryScan(id) {
 
 // Theme Functions
 function toggleTheme() {
-  const newTheme = state.theme === 'light' ? 'dark' : 'light';
+  const newTheme = state.theme === 'dark' ? 'light' : 'dark';
   state.theme = newTheme;
   localStorage.setItem('theme', newTheme);
   applyTheme(newTheme);
@@ -528,7 +560,7 @@ function applyTheme(theme) {
     document.documentElement.setAttribute('data-theme', 'dark');
     elements.themeToggle.querySelector('#themeIcon').textContent = '☀️';
   } else {
-    document.documentElement.removeAttribute('data-theme');
+    document.documentElement.setAttribute('data-theme', 'light');
     elements.themeToggle.querySelector('#themeIcon').textContent = '🌙';
   }
   state.theme = theme;
@@ -538,10 +570,12 @@ function applyTheme(theme) {
 function openSettings() {
   elements.defaultTargetInput.value = elements.targetInput.value;
   elements.settingsModal.classList.add('active');
+  elements.settingsModal.setAttribute('aria-hidden', 'false');
 }
 
 function closeSettings() {
   elements.settingsModal.classList.remove('active');
+  elements.settingsModal.setAttribute('aria-hidden', 'true');
 }
 
 function saveSettings() {
@@ -564,10 +598,12 @@ function loadSettings() {
 // Help Functions
 function openHelp() {
   elements.helpModal.classList.add('active');
+  elements.helpModal.setAttribute('aria-hidden', 'false');
 }
 
 function closeHelp() {
   elements.helpModal.classList.remove('active');
+  elements.helpModal.setAttribute('aria-hidden', 'true');
 }
 
 // Utility Functions
@@ -578,21 +614,22 @@ function showMessage(text, type = 'info') {
     top: 20px;
     right: 20px;
     padding: 12px 16px;
-    background-color: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : '#3b82f6'};
+    background-color: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : type === 'warning' ? '#f59e0b' : 'rgba(0,180,255,0.95)'};
     color: white;
-    border-radius: 6px;
-    font-weight: 600;
+    border-radius: 8px;
+    font-weight: 800;
     z-index: 2000;
-    animation: slideIn 0.3s ease-out;
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.28s ease-out;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
   `;
   alertDiv.textContent = text;
   document.body.appendChild(alertDiv);
 
   setTimeout(() => {
-    alertDiv.style.animation = 'slideOut 0.3s ease-out';
+    alertDiv.style.animation = 'slideOut 0.28s ease-out';
     setTimeout(() => alertDiv.remove(), 300);
-  }, 3000);
+  }, 2600);
 }
 
 function downloadFile(content, filename, type) {
@@ -622,12 +659,12 @@ function checkNmapStatus() {
 const style = document.createElement('style');
 style.textContent = `
   @keyframes slideIn {
-    from { transform: translateX(400px); opacity: 0; }
+    from { transform: translateX(240px); opacity: 0; }
     to { transform: translateX(0); opacity: 1; }
   }
   @keyframes slideOut {
     from { transform: translateX(0); opacity: 1; }
-    to { transform: translateX(400px); opacity: 0; }
+    to { transform: translateX(240px); opacity: 0; }
   }
 `;
 document.head.appendChild(style);

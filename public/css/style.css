@@ -1,39 +1,36 @@
 :root{
-  --primary: #2563eb;
-  --primary-600:#1e40af;
-  --muted: #6b7280;
-  --bg: #f8fafc;
-  --card:#ffffff;
-  --surface:#f1f5f9;
-  --success:#10b981;
-  --danger:#ef4444;
-  --accent:#7c3aed;
-  --text:#0f172a;
-  --soft:#e6eefc;
-  --border:#e6e9ef;
-  --glass: rgba(255,255,255,0.6);
-  --radius:10px;
-  --shadow: 0 6px 18px rgba(15,23,42,0.06);
-  --transition: 180ms cubic-bezier(.2,.9,.2,1);
+  --primary: #00b4ff;
+  --btn-start: #7c3aed;
+  --btn-end: #ff6ec7;
+  --muted: #9aa6b2;
+  --bg: #071026;
+  --card:#071a2a;
+  --surface:#0b2432;
+  --success:#2ee6a8;
+  --danger:#ff6b6b;
+  --accent:#9b59ff;
+  --text:#e6f3fb;
+  --soft:#05202b;
+  --border: rgba(255,255,255,0.06);
+  --glass: rgba(255,255,255,0.03);
+  --radius:12px;
+  --shadow: 0 10px 30px rgba(3,10,18,0.6);
+  --transition: 200ms cubic-bezier(.2,.9,.2,1);
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 
-[data-theme="dark"] {
-  --primary: #3b82f6;
-  --primary-600:#60a5fa;
-  --muted: #94a3b8;
-  --bg: #0b1220;
-  --card:#0f1724;
-  --surface:#071026;
-  --success:#34d399;
-  --danger:#f87171;
-  --accent:#8b5cf6;
-  --text:#e6eef6;
-  --soft:#081028;
-  --border:#1f2937;
-  --glass: rgba(255,255,255,0.03);
-  --radius:10px;
-  --shadow: 0 8px 24px rgba(2,6,23,0.6);
+/* Light fallback */
+:root[data-theme="light"]{
+  --btn-start: #2563eb;
+  --btn-end: #60a5fa;
+  --text:#0f172a;
+  --bg: #f6fbff;
+  --card:#ffffff;
+  --surface:#f3f7fb;
+  --border:#e6e9ef;
+  --shadow:0 8px 24px rgba(2,6,23,0.06);
 }
 
 /* base */
@@ -41,12 +38,12 @@
 html,body{height:100%}
 body{
   margin:0;
-  background: linear-gradient(180deg,var(--bg), #ffffff00);
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(0,180,255,0.06), transparent),
+              radial-gradient(1000px 500px at 90% 90%, rgba(155,89,255,0.03), transparent),
+              var(--bg);
   color:var(--text);
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
   font-size:14px;
-  line-height:1.4;
+  line-height:1.45;
 }
 
 /* App container */
@@ -54,8 +51,8 @@ body{
   display:flex;
   flex-direction:column;
   height:100vh;
-  gap:12px;
-  padding:14px;
+  gap:14px;
+  padding:18px;
 }
 
 /* Header */
@@ -64,14 +61,14 @@ body{
   justify-content:space-between;
   align-items:center;
   gap:16px;
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:14px 18px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  border-radius:14px;
+  padding:16px 20px;
   box-shadow:var(--shadow);
   border:1px solid var(--border);
 }
 
-.app-title{ margin:0; font-size:18px; color:var(--primary); font-weight:700;}
+.app-title{ margin:0; font-size:20px; color:var(--primary); font-weight:800; letter-spacing:0.2px;}
 .app-subtitle{ margin:2px 0 0 0; font-size:12px; color:var(--muted);}
 
 /* Header actions */
@@ -80,25 +77,25 @@ body{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  border-radius:10px;
+  border-radius:12px;
   width:44px;
   height:44px;
   border:1px solid transparent;
-  background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
   cursor:pointer;
   transition:all var(--transition);
   color:var(--text);
   font-size:16px;
-  box-shadow: 0 4px 12px rgba(2,6,23,0.04);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.45);
 }
-.icon-btn:hover{ transform:translateY(-3px); border-color:var(--border) }
-.icon-btn:focus{ outline:3px solid rgba(37,99,235,0.12); outline-offset:2px }
+.icon-btn:hover{ transform:translateY(-3px); box-shadow: 0 12px 30px rgba(0,180,255,0.08) }
+.icon-btn:focus{ outline:3px solid rgba(0,180,255,0.12); outline-offset:2px }
 
-/* Main content layout */
+/* Main content layout: left main area + narrower right history */
 .main-content{
   display:grid;
-  grid-template-columns: 1.6fr 0.9fr;
-  gap:14px;
+  grid-template-columns: 1.9fr 0.5fr; /* reduced history width */
+  gap:16px;
   align-items:start;
   flex:1;
   min-height:0;
@@ -108,26 +105,58 @@ body{
 .left-pane{
   display:flex;
   flex-direction:column;
-  gap:12px;
-  padding:12px;
-  background:var(--card);
-  border-radius:var(--radius);
+  gap:14px;
+  padding:14px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+  border-radius:12px;
   border:1px solid var(--border);
   min-height:0;
-  box-shadow:var(--shadow);
+  box-shadow: 0 12px 34px rgba(0,0,0,0.6);
 }
 
-/* Right pane */
+/* Right pane: make it a column flex so history can grow/shrink independently */
 .right-pane{
   display:flex;
   flex-direction:column;
   gap:12px;
   padding:12px;
-  background:var(--card);
-  border-radius:var(--radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+  border-radius:12px;
   border:1px solid var(--border);
   min-height:0;
-  box-shadow:var(--shadow);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+}
+
+/* History section (flex:1 so it consumes remaining vertical space and scrolls) */
+.history-section{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-height:0;        /* critical for flex children to allow overflow */
+  flex:1;              /* takes available vertical space in right-pane */
+}
+
+/* Ensure the visible list scrolls, not the whole right pane */
+.history-list{
+  overflow:auto;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+  padding:6px;
+  min-height:120px;
+  /* do NOT set a fixed max-height here; let the parent .history-section control height */
+}
+
+/* History action (stays under list) */
+.history-actions{
+  margin-top:6px;
+  display:flex;
+}
+
+/* GitHub section separate and pinned after history (not inside scroll) */
+.github-section{
+  margin-top:6px;
+  flex:0 0 auto; /* do not grow, do not shrink, leave at natural height */
 }
 
 /* Control panel */
@@ -139,14 +168,14 @@ body{
 .target-input{
   flex:1;
   padding:12px 14px;
-  border-radius:10px;
+  border-radius:12px;
   border:1px solid var(--border);
-  background:transparent;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
   color:var(--text);
   transition:box-shadow var(--transition), border-color var(--transition);
   font-size:14px;
 }
-.target-input:focus{ box-shadow:0 8px 30px rgba(37,99,235,0.08); border-color:var(--primary) }
+.target-input:focus{ box-shadow:0 12px 40px rgba(0,180,255,0.06); border-color:var(--primary) }
 
 /* small control buttons next to input */
 .control-right{ display:flex; gap:8px; align-items:center }
@@ -154,84 +183,94 @@ body{
   height:40px;
   padding:6px 12px;
   border-radius:10px;
-  border:1px solid var(--border);
-  background:linear-gradient(180deg, var(--card), var(--surface));
+  border:1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
   cursor:pointer;
   transition:all var(--transition);
-  font-weight:600;
+  font-weight:700;
+  color:var(--text);
 }
-.btn.small:hover{ transform:translateY(-3px) }
+.btn.small:hover{ transform:translateY(-4px); box-shadow:0 10px 26px rgba(0,180,255,0.05) }
 
-/* Scan modes */
+/* Prominent scan mode buttons with new button color accents */
 .scan-modes{
   display:grid;
   grid-template-columns: repeat(3, 1fr);
-  gap:10px;
+  gap:12px;
 }
 .scan-btn{
-  padding:12px 10px;
-  border-radius:12px;
-  border:1px solid var(--border);
-  background:linear-gradient(180deg,#fff, var(--surface));
+  padding:14px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.03);
+  background: linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
   cursor:pointer;
-  font-weight:700;
+  font-weight:800;
   color:var(--text);
-  transition: all var(--transition);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:8px;
-  box-shadow: 0 8px 18px rgba(2,6,23,0.04);
+  gap:10px;
+  letter-spacing:0.4px;
+  box-shadow: inset 0 -12px 40px rgba(0,0,0,0.35);
 }
-.scan-btn:hover{ transform:translateY(-4px); border-color:var(--primary) }
-.scan-btn:active{ transform:translateY(-1px) }
+/* updated scan button hover to show btn gradient glow */
+.scan-btn:hover{
+  transform:translateY(-6px);
+  border-color: rgba(255,255,255,0.06);
+  box-shadow: 0 18px 40px rgba(124,58,237,0.08);
+  background: linear-gradient(90deg, var(--btn-start), var(--btn-end));
+  color: #fff;
+}
+.scan-btn:active{ transform:translateY(-2px) }
 
 /* Host summary */
-.host-summary{ padding:14px; border-radius:10px; background:var(--surface); border:1px solid var(--border) }
-.summary-grid{ display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap }
+.host-summary{ padding:14px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent); border:1px solid var(--border) }
+.summary-grid{ display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap }
 .summary-item{ display:flex; gap:12px; align-items:center; min-width:0; flex:1 }
-.summary-text .summary-line{ font-weight:700 }
+.summary-text .summary-line{ font-weight:800; font-size:15px }
 .summary-text .summary-sub{ font-size:12px; color:var(--muted) }
 
-/* LED */
+/* LED with neon glow */
 .led{
   width:20px;
   height:20px;
   border-radius:50%;
-  background:var(--border);
-  box-shadow:0 8px 18px rgba(2,6,23,0.06);
-  transition:background-color 220ms ease, transform 200ms ease;
+  background:transparent;
+  border:2px solid rgba(255,255,255,0.04);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+  transition: box-shadow 220ms ease, background 220ms ease, transform 220ms ease;
 }
-.led.up{ background:var(--success); transform:scale(1.06) }
-.led.down{ background:var(--danger) }
+.led.up{ background:linear-gradient(90deg,var(--success), rgba(46,230,168,0.9)); box-shadow: 0 6px 30px rgba(46,230,168,0.18), 0 0 18px rgba(46,230,168,0.22) }
+.led.down{ background:linear-gradient(90deg,var(--danger), rgba(255,107,107,0.9)); box-shadow: 0 6px 30px rgba(255,107,107,0.12), 0 0 18px rgba(255,107,107,0.12) }
 
 /* small stats */
 .stats{ display:flex; gap:12px; align-items:center; justify-content:flex-end }
 .stat-block{ text-align:right }
-.stat-number{ font-weight:800; font-size:16px }
+.stat-number{ font-weight:900; font-size:16px; color:var(--text) }
 .stat-label{ font-size:12px; color:var(--muted) }
 
 /* Port filter */
 .port-filter{ display:flex; gap:8px; align-items:center }
-.filter-input{ width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); font-size:14px }
+.filter-input{ width:100%; padding:10px 12px; border-radius:12px; border:1px solid var(--border); font-size:14px }
 
-/* Ports table */
+/* Ports table: glass + neon highlight on hover */
 .ports-section{ display:flex; flex-direction:column; gap:8px; min-height:200px; flex:1; }
-.table-wrapper{ overflow:auto; border-radius:10px; border:1px solid var(--border); background: linear-gradient(180deg,var(--card), var(--surface)); max-height:480px }
+.table-wrapper{ overflow:auto; border-radius:12px; border:1px solid var(--border); background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent); max-height:520px }
 .ports-table{ width:100%; border-collapse:collapse; min-width:720px; font-size:14px }
-.ports-table thead{ position:sticky; top:0; background:var(--card); z-index:2; box-shadow: inset 0 -1px 0 var(--border) }
-.ports-table th, .ports-table td{ padding:12px 14px; text-align:left; border-bottom:1px solid var(--border) }
-.ports-table tbody tr:nth-child(even){ background: linear-gradient(180deg, rgba(0,0,0,0.01), transparent) }
-.ports-table tbody tr:hover{ background: linear-gradient(90deg, rgba(37,99,235,0.03), transparent) }
+.ports-table thead{ position:sticky; top:0; background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent); z-index:3; box-shadow: inset 0 -1px 0 var(--border) }
+.ports-table th, .ports-table td{ padding:12px 14px; text-align:left; border-bottom:1px solid rgba(255,255,255,0.02) }
+.ports-table tbody tr{ transition: background 180ms, box-shadow 180ms; border-radius:6px; }
+.ports-table tbody tr:hover{ background: linear-gradient(90deg, rgba(0,180,255,0.03), rgba(155,89,255,0.01)); box-shadow: 0 8px 28px rgba(0,180,255,0.03) }
 
 /* state classes */
-.port-open{ color:var(--success); font-weight:700 }
-.port-filtered{ color:var(--accent); font-weight:700 }
-.port-closed{ color:var(--danger); font-weight:700 }
+.port-open{ color:var(--success); font-weight:800 }
+.port-filtered{ color:var(--accent); font-weight:800 }
+.port-closed{ color:var(--danger); font-weight:800 }
 
 /* Logs */
 .logs-section{ margin-top:6px }
-.log-container{ padding:12px; border-radius:10px; background:var(--surface); border:1px solid var(--border); font-family:Consolas,monospace; font-size:13px; max-height:160px; overflow:auto }
+.log-container{ padding:12px; border-radius:12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent); border:1px solid var(--border); font-family:Consolas,monospace; font-size:13px; max-height:180px; overflow:auto }
 .log-empty{ color:var(--muted); font-style:italic }
 .log-entry{ margin-bottom:6px; color:var(--muted) }
 .log-entry.success{ color:var(--success) }
@@ -240,54 +279,45 @@ body{
 /* Status bar */
 .status-bar{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px; margin-top:8px; border-radius:10px; background:transparent; color:var(--muted) }
 .status-text{ font-weight:700; color:var(--muted) }
-.progress-wrap{ width:240px; height:8px; background:var(--border); border-radius:999px; overflow:hidden; opacity:0; transition:opacity var(--transition) }
+.progress-wrap{ width:220px; height:8px; background: rgba(255,255,255,0.02); border-radius:999px; overflow:hidden; opacity:0; transition:opacity var(--transition) }
 .progress-wrap.active{ opacity:1 }
-.progress-fill{ height:100%; width:0%; background:linear-gradient(90deg,var(--primary),var(--accent)); animation:progress 2s ease-in-out infinite }
-
-/* history */
-.history-panel{ display:flex; flex-direction:column; gap:12px; min-height:0 }
-.history-list{ overflow:auto; border-radius:8px; border:1px solid var(--border); background:var(--surface); padding:6px; min-height:120px; max-height:520px }
-.history-item{ padding:12px; border-bottom:1px dashed var(--border); cursor:pointer; border-radius:6px; transition:background var(--transition); display:block }
-.history-item:hover{ background:linear-gradient(90deg, rgba(37,99,235,0.03), transparent) }
-.history-empty{ padding:12px; text-align:center; color:var(--muted) }
+.progress-fill{ height:100%; width:0%; background: linear-gradient(90deg,var(--primary),var(--accent)); animation:progress 2s ease-in-out infinite }
 
 /* GitHub card */
 .github-card{
-  margin-top:14px;
+  width:100%;
   padding:12px;
   border-radius:10px;
-  background:linear-gradient(180deg,var(--card), var(--surface));
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
   border:1px solid var(--border);
 }
 .gh-header{ display:flex; gap:12px; align-items:center }
-.gh-avatar{ width:46px; height:46px; border-radius:10px; background:linear-gradient(135deg,var(--primary),var(--accent)); color:white; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:16px }
+.gh-avatar{ width:56px; height:56px; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg,var(--primary),var(--accent)); box-shadow: 0 8px 30px rgba(0,180,255,0.06) }
+.gh-avatar-img{ display:block; width:100%; height:100%; object-fit:cover; border-radius:10px; border:2px solid rgba(255,255,255,0.03) }
 .gh-name{ font-weight:800 }
 .gh-sub{ font-size:12px; color:var(--muted) }
 .gh-desc{ margin:10px 0 8px 0; color:var(--muted); font-size:13px }
 .gh-actions{ display:flex; gap:8px; flex-wrap:wrap }
-.btn.github{ padding:8px 12px; border-radius:10px; border:1px solid var(--border); cursor:pointer; text-decoration:none; color:var(--text); display:inline-flex; align-items:center; gap:8px; font-weight:700; background:linear-gradient(180deg,var(--card),var(--surface)) }
-.btn.github.primary{ background:linear-gradient(90deg,var(--primary),var(--primary-600)); color:white; border:none }
-.btn.github.ghost{ background:transparent }
+.btn.github{ padding:8px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.02); cursor:pointer; text-decoration:none; color:var(--text); display:inline-flex; align-items:center; gap:8px; font-weight:800; background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent) }
+.btn.github.primary{ background: linear-gradient(90deg, var(--btn-start), var(--btn-end)); color:white; border:none; box-shadow: 0 12px 30px rgba(124,58,237,0.08) }
+.btn.github.ghost{ background:transparent; border:1px dashed rgba(255,255,255,0.03) }
 .gh-footer{ margin-top:10px; font-size:13px }
 
 /* modal */
-.modal{ display:none; position:fixed; inset:0; align-items:center; justify-content:center; background:rgba(2,6,23,0.4); z-index:60 }
+.modal{ display:none; position:fixed; inset:0; align-items:center; justify-content:center; background:rgba(2,6,23,0.6); z-index:60 }
 .modal.active{ display:flex }
-.modal-content{ width:100%; max-width:520px; border-radius:12px; overflow:hidden; background:var(--card); border:1px solid var(--border); box-shadow:var(--shadow) }
+.modal-content{ width:100%; max-width:520px; border-radius:12px; overflow:hidden; background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent); border:1px solid var(--border); box-shadow:var(--shadow) }
 .modal-header{ display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid var(--border) }
 .modal-body{ padding:16px 18px; max-height:60vh; overflow:auto }
 .modal-footer{ display:flex; gap:10px; padding:12px 18px; border-top:1px solid var(--border); justify-content:flex-end }
 .close-btn{ background:none; border:none; font-size:22px; cursor:pointer; color:var(--muted) }
 
-/* buttons */
-.btn{ padding:10px 14px; border-radius:10px; border:1px solid var(--border); background:var(--card); cursor:pointer; transition:all var(--transition); font-weight:700 }
-.btn.primary{ background:linear-gradient(90deg,var(--primary),var(--primary-600)); color:#fff; border:none; box-shadow: 0 8px 22px rgba(37,99,235,0.14) }
+/* buttons base */
+.btn{ padding:10px 14px; border-radius:10px; border:1px solid rgba(255,255,255,0.02); background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent); cursor:pointer; transition:all var(--transition); font-weight:800; color:var(--text) }
+.btn.primary{ background: linear-gradient(90deg,var(--btn-start),var(--btn-end)); color:#fff; border:none; box-shadow: 0 12px 34px rgba(124,58,237,0.10) }
 .btn.secondary{ background:transparent }
-.btn.ghost{ background:transparent; border:1px dashed var(--border) }
+.btn.ghost{ background:transparent; border:1px dashed rgba(255,255,255,0.03) }
 .btn.full{ width:100% }
-
-/* small text */
-.small-note{ font-size:12px; color:var(--muted); margin-top:6px }
 
 /* utilities */
 @keyframes progress {
@@ -297,17 +327,18 @@ body{
 }
 
 /* focus states for accessibility */
-button:focus, input:focus, .ports-table th:focus{ outline:3px solid rgba(37,99,235,0.12); outline-offset:3px }
+button:focus, input:focus, .ports-table th:focus{ outline:3px solid rgba(0,180,255,0.10); outline-offset:3px }
 
 /* Responsive */
 @media (max-width: 1100px){
-  .main-content{ grid-template-columns: 1fr 0.95fr }
+  .main-content{ grid-template-columns: 1fr 0.6fr }
   .ports-table{ min-width:640px }
 }
 @media (max-width: 880px){
   .main-content{ grid-template-columns: 1fr; }
   .scan-modes{ grid-template-columns: repeat(2,1fr) }
-  .history-panel{ order:2 }
+  .history-section{ order:2 }
+  .github-section{ order:3 }
   .gh-actions{ justify-content:flex-start }
 }
 @media (max-width: 520px){

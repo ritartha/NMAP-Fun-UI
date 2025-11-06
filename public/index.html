@@ -8,7 +8,7 @@
   <meta name="description" content="Professional web-based GUI for Nmap scanning" />
 </head>
 <body>
-  <div class="app-container" role="application" aria-label="Nmap GUI Professional">
+  <div class="app-container futuristic" role="application" aria-label="Nmap GUI Professional">
     <!-- Header -->
     <header class="app-header" role="banner">
       <div class="header-left">
@@ -156,20 +156,30 @@
       </section>
 
       <!-- Right Pane -->
-      <aside class="right-pane" aria-label="Scan history">
-        <div class="history-panel">
-          <h3>Scan History</h3>
+      <aside class="right-pane narrow-history" aria-label="Scan history and project details">
+        <!-- History section (scrollable, takes available vertical space) -->
+        <div class="history-section">
+          <div class="history-header">
+            <h3>Scan History</h3>
+          </div>
+
+          <!-- this list is scrollable independently -->
           <div class="history-list" id="historyList" role="list" aria-live="polite">
             <p class="history-empty">No scans yet</p>
           </div>
+
           <div class="history-actions">
             <button class="btn full ghost" id="clearHistoryBtn" title="Clear history">🗑️ Clear History</button>
           </div>
+        </div>
 
-          <!-- GitHub Card -->
+        <!-- GitHub Card separated from history (never part of history scroll) -->
+        <div class="github-section" aria-label="Project and author details">
           <div class="github-card" aria-label="Project and author details">
             <div class="gh-header">
-              <div class="gh-avatar" aria-hidden="true">RC</div>
+              <div class="gh-avatar" aria-hidden="false">
+                <img class="gh-avatar-img" src="https://avatars.githubusercontent.com/u/38487432?v=4" alt="Ritartha Chaki avatar">
+              </div>
               <div class="gh-info">
                 <div class="gh-name">Ritartha Chaki</div>
                 <div class="gh-sub">@ritartha / NMAP-Fun-UI</div>
