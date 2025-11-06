@@ -15,7 +15,7 @@
     "gui",
     "web"
   ],
-  "author": "Anya Hritvik",
+  "author": "Ritartha Chaki",
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",

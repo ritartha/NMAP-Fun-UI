@@ -1,480 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Nmap GUI — Professional Web Edition</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/style.css">
+  <meta name="description" content="Professional web-based GUI for Nmap scanning" />
 </head>
 <body>
-  <div class="app-container">
-    <!-- Animated Background -->
-    <div class="animated-bg"></div>
-
+  <div class="app-container" role="application" aria-label="Nmap GUI Professional">
     <!-- Header -->
-    <header class="app-header">
-      <div class="header-content">
-        <div class="header-left">
-          <div class="logo-section">
-            <div class="logo-icon">🗺️</div>
-            <div class="logo-text">
-              <h1>Nmap GUI</h1>
-              <p class="tagline">Professional Network Scanner</p>
-            </div>
-          </div>
-        </div>
-        <div class="header-right">
-          <div class="header-stats">
-            <div class="stat-item">
-              <span class="stat-icon">⚡</span>
-              <span class="stat-value" id="scanCount">0</span>
-              <span class="stat-label">Scans</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-icon">🎯</span>
-              <span class="stat-value" id="portCount">0</span>
-              <span class="stat-label">Ports</span>
-            </div>
-          </div>
-          <div class="header-buttons">
-            <button class="header-btn" id="themeToggle" title="Toggle theme">
-              <i class="fas fa-moon"></i>
-            </button>
-            <button class="header-btn" id="settingsBtn" title="Settings">
-              <i class="fas fa-cog"></i>
-            </button>
-            <button class="header-btn" id="helpBtn" title="Help">
-              <i class="fas fa-question-circle"></i>
-            </button>
-          </div>
+    <header class="app-header" role="banner">
+      <div class="header-left">
+        <h1 class="app-title" title="Nmap GUI — Professional Web Edition">🗺️ Nmap GUI — Professional</h1>
+        <p class="app-subtitle">Modern interface for nmap — quick scans, service detection, OS fingerprinting</p>
+      </div>
+
+      <div class="header-right" role="navigation" aria-label="Global actions">
+        <div class="header-actions" aria-hidden="false">
+          <button class="icon-btn" id="themeToggle" aria-label="Toggle theme" title="Toggle theme (T)">
+            <span id="themeIcon">🌙</span>
+          </button>
+
+          <button class="icon-btn" id="settingsBtn" aria-haspopup="dialog" aria-controls="settingsModal" title="Settings (S)">
+            <span>⚙️</span>
+          </button>
+
+          <button class="icon-btn" id="helpBtn" aria-haspopup="dialog" aria-controls="helpModal" title="Help (?)">
+            <span>❓</span>
+          </button>
         </div>
       </div>
     </header>
 
     <!-- Main Content -->
-    <main class="main-content">
+    <main class="main-content" role="main">
       <!-- Left Pane -->
-      <div class="left-pane">
-        <!-- Welcome Card -->
-        <section class="welcome-card">
-          <div class="welcome-content">
-            <h2>Network Reconnaissance</h2>
-            <p>Enter targets to begin sophisticated network scanning with advanced analysis</p>
-          </div>
-        </section>
-
+      <section class="left-pane" aria-label="Controls and results">
         <!-- Control Panel -->
-        <section class="control-panel card">
-          <div class="card-header">
-            <i class="fas fa-crosshairs"></i>
-            <h3>Target Configuration</h3>
-          </div>
-          <div class="card-body">
-            <label for="targetInput" class="label-primary">Targets (CSV/IP/Domain)</label>
-            <div class="input-wrapper">
-              <input 
-                type="text" 
-                id="targetInput" 
-                class="target-input" 
-                placeholder="e.g., 10.1.49.92, 192.168.1.0/24, example.com"
-                value="10.1.49.92"
-              >
-              <div class="input-icon"><i class="fas fa-network-wired"></i></div>
+        <div class="control-panel">
+          <label for="targetInput" class="label-bold">Targets (CSV / IP / Domain)</label>
+          <div class="input-row">
+            <input 
+              type="text" 
+              id="targetInput" 
+              class="target-input" 
+              placeholder="e.g., 10.1.49.92, 192.168.1.0/24, example.com"
+              value="10.1.49.92"
+              aria-label="Targets"
+            >
+            <div class="control-right">
+              <button class="btn small" id="saveXmlBtn" title="Save last XML">💾</button>
+              <button class="btn small" id="exportCsvBtn" title="Export ports to CSV">📊</button>
+              <button class="btn small" id="copyResultsBtn" title="Copy results">📋</button>
+              <button class="btn small" id="openFolderBtn" title="Open output folder">📁</button>
+              <button class="btn small" id="rerunBtn" title="Re-run last scan">🔄</button>
             </div>
           </div>
-        </section>
+        </div>
 
-        <!-- Scan Mode Section -->
-        <section class="scan-modes-section card">
-          <div class="card-header">
-            <i class="fas fa-radar"></i>
-            <h3>Scan Modes</h3>
-          </div>
-          <div class="card-body">
-            <div class="scan-modes-grid">
-              <button class="scan-btn mode-ping" data-mode="ping" title="Simple host discovery">
-                <div class="scan-btn-icon">📡</div>
-                <div class="scan-btn-label">Ping</div>
-                <div class="scan-btn-desc">Host Discovery</div>
-              </button>
-              <button class="scan-btn mode-quick" data-mode="quick" title="Top 200 ports">
-                <div class="scan-btn-icon">⚡</div>
-                <div class="scan-btn-label">Quick</div>
-                <div class="scan-btn-desc">Top Ports</div>
-              </button>
-              <button class="scan-btn mode-fulltcp" data-mode="fulltcp" title="All 65535 ports">
-                <div class="scan-btn-icon">🔍</div>
-                <div class="scan-btn-label">Full TCP</div>
-                <div class="scan-btn-desc">Complete Scan</div>
-              </button>
-              <button class="scan-btn mode-svcdetect" data-mode="svcdetect" title="Service detection">
-                <div class="scan-btn-icon">🔧</div>
-                <div class="scan-btn-label">SvcDetect</div>
-                <div class="scan-btn-desc">Services</div>
-              </button>
-              <button class="scan-btn mode-os" data-mode="os" title="OS fingerprinting">
-                <div class="scan-btn-icon">🖥️</div>
-                <div class="scan-btn-label">OS Detect</div>
-                <div class="scan-btn-desc">Fingerprint</div>
-              </button>
-              <button class="scan-btn mode-nse" data-mode="nse" title="NSE scripts">
-                <div class="scan-btn-icon">🎯</div>
-                <div class="scan-btn-label">NSE</div>
-                <div class="scan-btn-desc">Advanced</div>
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Quick Actions -->
-        <section class="quick-actions-section card">
-          <div class="card-header">
-            <i class="fas fa-bolt"></i>
-            <h3>Quick Actions</h3>
-          </div>
-          <div class="card-body">
-            <div class="actions-grid">
-              <button class="action-btn primary-btn" id="saveXmlBtn">
-                <i class="fas fa-save"></i> Save XML
-              </button>
-              <button class="action-btn primary-btn" id="exportCsvBtn">
-                <i class="fas fa-table"></i> Export CSV
-              </button>
-              <button class="action-btn primary-btn" id="copyResultsBtn">
-                <i class="fas fa-copy"></i> Copy
-              </button>
-              <button class="action-btn primary-btn" id="openFolderBtn">
-                <i class="fas fa-folder-open"></i> Folder
-              </button>
-              <button class="action-btn secondary-btn" id="rerunBtn">
-                <i class="fas fa-redo"></i> Re-run
-              </button>
-              <button class="action-btn danger-btn" id="clearHistoryBtn">
-                <i class="fas fa-trash"></i> Clear
-              </button>
-            </div>
-          </div>
-        </section>
+        <!-- Scan Mode Buttons -->
+        <div class="scan-modes" role="group" aria-label="Scan modes">
+          <button class="scan-btn" data-mode="ping" title="Ping scan (host discovery)">📡 Ping</button>
+          <button class="scan-btn" data-mode="quick" title="Quick scan (top 200 ports)">⚡ Quick</button>
+          <button class="scan-btn" data-mode="fulltcp" title="Full TCP scan (all ports)">🔍 Full TCP</button>
+          <button class="scan-btn" data-mode="svcdetect" title="Service/version detection">🔧 SvcDetect</button>
+          <button class="scan-btn" data-mode="os" title="OS detection (may require privileges)">🖥️ OS Detect</button>
+          <button class="scan-btn" data-mode="nse" title="Run Nmap default scripts (NSE)">🎯 NSE</button>
+        </div>
 
         <!-- Host Summary -->
-        <section class="host-summary card">
-          <div class="card-header">
-            <i class="fas fa-server"></i>
-            <h3>Host Summary</h3>
-          </div>
-          <div class="card-body">
-            <div class="summary-grid">
-              <div class="summary-item">
-                <div class="summary-icon">
-                  <div class="led" id="statusLed"></div>
-                </div>
-                <div class="summary-text">
-                  <span class="summary-label">Host Status</span>
-                  <span class="summary-value" id="hostLabel">-</span>
-                </div>
+        <div class="host-summary" aria-live="polite" aria-atomic="true">
+          <h3>Host Summary</h3>
+          <div class="summary-grid">
+            <div class="summary-item">
+              <div class="led" id="statusLed" role="status" aria-label="Host status"></div>
+              <div class="summary-text">
+                <div id="hostLabel" class="summary-line">Host: -</div>
+                <div id="osLabel" class="summary-sub">OS: -</div>
               </div>
-              <div class="summary-item">
-                <div class="summary-icon">
-                  <i class="fas fa-ethernet"></i>
-                </div>
-                <div class="summary-text">
-                  <span class="summary-label">MAC Address</span>
-                  <span class="summary-value" id="macLabel">-</span>
-                </div>
+            </div>
+
+            <div class="summary-item">
+              <div class="summary-text">
+                <div id="macLabel" class="summary-line">MAC: -</div>
+                <div class="summary-sub">Vendor: -</div>
               </div>
-              <div class="summary-item">
-                <div class="summary-icon">
-                  <i class="fas fa-microchip"></i>
-                </div>
-                <div class="summary-text">
-                  <span class="summary-label">Operating System</span>
-                  <span class="summary-value" id="osLabel">-</span>
-                </div>
+            </div>
+
+            <div class="summary-item stats">
+              <div class="stat-block">
+                <div class="stat-number" id="portsFound">—</div>
+                <div class="stat-label">Ports</div>
+              </div>
+              <div class="stat-block">
+                <div class="stat-number" id="lastScanTime">—</div>
+                <div class="stat-label">Last</div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
         <!-- Port Filter -->
-        <section class="port-filter-section card">
-          <div class="card-header">
-            <i class="fas fa-filter"></i>
-            <h3>Port Filter</h3>
-          </div>
-          <div class="card-body">
-            <div class="search-wrapper">
-              <input 
-                type="text" 
-                id="portFilterInput" 
-                class="filter-input" 
-                placeholder="Search by port, service, state..."
-              >
-              <div class="search-icon"><i class="fas fa-search"></i></div>
-            </div>
-          </div>
-        </section>
+        <div class="port-filter">
+          <label for="portFilterInput">Filter Ports</label>
+          <input 
+            type="text" 
+            id="portFilterInput" 
+            class="filter-input" 
+            placeholder="Search by port, service, state..."
+            aria-label="Filter ports"
+          >
+        </div>
 
         <!-- Ports Table -->
-        <section class="ports-section card">
-          <div class="card-header">
-            <i class="fas fa-list"></i>
-            <h3>Open / Filtered Ports</h3>
-            <span class="port-count-badge" id="portCountBadge">0</span>
+        <div class="ports-section" aria-label="Ports table">
+          <h3>Open / Filtered Ports</h3>
+          <div class="table-wrapper">
+            <table class="ports-table" id="portsTable" role="table" aria-label="Ports table">
+              <thead>
+                <tr role="row">
+                  <th class="sortable" data-column="protocol" scope="col" role="columnheader" tabindex="0">Protocol</th>
+                  <th class="sortable" data-column="port" scope="col" role="columnheader" tabindex="0">Port</th>
+                  <th class="sortable" data-column="state" scope="col" role="columnheader" tabindex="0">State</th>
+                  <th class="sortable" data-column="service" scope="col" role="columnheader" tabindex="0">Service</th>
+                  <th scope="col" role="columnheader">Version</th>
+                </tr>
+              </thead>
+              <tbody id="portsBody" role="rowgroup">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
           </div>
-          <div class="card-body">
-            <div class="table-wrapper">
-              <table class="ports-table" id="portsTable">
-                <thead>
-                  <tr>
-                    <th class="sortable" data-column="protocol">
-                      <i class="fas fa-sort"></i> Protocol
-                    </th>
-                    <th class="sortable" data-column="port">
-                      <i class="fas fa-sort"></i> Port
-                    </th>
-                    <th class="sortable" data-column="state">
-                      <i class="fas fa-sort"></i> State
-                    </th>
-                    <th class="sortable" data-column="service">
-                      <i class="fas fa-sort"></i> Service
-                    </th>
-                    <th>Version</th>
-                  </tr>
-                </thead>
-                <tbody id="portsBody">
-                  <tr class="empty-row">
-                    <td colspan="5">No ports scanned yet. Select a target and scan mode to begin.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
+        </div>
 
         <!-- Logs -->
-        <section class="logs-section card">
-          <div class="card-header">
-            <i class="fas fa-terminal"></i>
-            <h3>Logs & Events</h3>
+        <div class="logs-section" aria-label="Logs and errors">
+          <h3>Errors / Logs</h3>
+          <div class="log-container" id="logContainer" role="log" aria-live="polite">
+            <p class="log-empty">Logs will appear here...</p>
           </div>
-          <div class="card-body">
-            <div class="log-container" id="logContainer">
-              <p class="log-message">Logs will appear here...</p>
-            </div>
-          </div>
-        </section>
+        </div>
 
         <!-- Status Bar -->
-        <footer class="status-bar">
+        <footer class="status-bar" role="contentinfo">
           <div class="status-left">
-            <span class="status-icon"><i class="fas fa-info-circle"></i></span>
-            <span id="statusText">Ready</span>
+            <span id="statusText" class="status-text">Ready</span>
           </div>
-          <div class="progress-container">
-            <div class="progress-bar" id="progressBar">
-              <div class="progress-fill"></div>
+          <div class="status-right">
+            <div class="progress-wrap" id="progressBar" aria-hidden="true">
+              <div class="progress-fill" aria-hidden="true"></div>
             </div>
           </div>
         </footer>
-      </div>
+      </section>
 
       <!-- Right Pane -->
-      <aside class="right-pane">
-        <!-- History Panel -->
-        <section class="history-panel card">
-          <div class="card-header">
-            <i class="fas fa-history"></i>
-            <h3>Scan History</h3>
+      <aside class="right-pane" aria-label="Scan history">
+        <div class="history-panel">
+          <h3>Scan History</h3>
+          <div class="history-list" id="historyList" role="list" aria-live="polite">
+            <p class="history-empty">No scans yet</p>
           </div>
-          <div class="card-body">
-            <div class="history-list" id="historyList">
-              <p class="history-empty">
-                <i class="fas fa-inbox"></i>
-                No scans yet
-              </p>
-            </div>
+          <div class="history-actions">
+            <button class="btn full" id="clearHistoryBtn" title="Clear history">🗑️ Clear History</button>
           </div>
-          <div class="card-footer">
-            <button class="action-btn danger-btn" id="clearAllHistoryBtn" style="width: 100%;">
-              <i class="fas fa-broom"></i> Clear All
-            </button>
-          </div>
-        </section>
-
-        <!-- Info Panel -->
-        <section class="info-panel card">
-          <div class="card-header">
-            <i class="fas fa-lightbulb"></i>
-            <h3>Tips & Info</h3>
-          </div>
-          <div class="card-body">
-            <div class="info-content">
-              <h4>Getting Started</h4>
-              <ul>
-                <li>Enter target IP or domain</li>
-                <li>Choose a scan type</li>
-                <li>Click scan button</li>
-                <li>View results in table</li>
-              </ul>
-              <h4>Scan Types</h4>
-              <ul>
-                <li><strong>Ping:</strong> Fast host discovery</li>
-                <li><strong>Quick:</strong> Common ports</li>
-                <li><strong>Full:</strong> All ports</li>
-                <li><strong>Services:</strong> Version detection</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        <!-- Footer with GitHub Link -->
-        <footer class="sidebar-footer">
-          <div class="footer-content">
-            <p class="footer-text">Built with <span class="heart">❤️</span> by</p>
-            <a href="https://github.com/anyahritvik" class="github-link" target="_blank" rel="noopener noreferrer">
-              <i class="fab fa-github"></i>
-              <span>Anya Hritvik</span>
-            </a>
-            <div class="social-links">
-              <a href="https://github.com/anyahritvik/nmap-gui-nodejs" class="social-btn" title="GitHub Repo" target="_blank">
-                <i class="fab fa-github"></i>
-              </a>
-              <a href="https://github.com/anyahritvik" class="social-btn" title="GitHub Profile" target="_blank">
-                <i class="fab fa-github"></i>
-              </a>
-            </div>
-            <p class="version">v2.0.0 • 2025</p>
-          </div>
-        </footer>
+        </div>
       </aside>
     </main>
   </div>
 
   <!-- Settings Modal -->
-  <div class="modal" id="settingsModal">
-    <div class="modal-overlay"></div>
+  <div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="settingsTitle">
     <div class="modal-content">
       <div class="modal-header">
-        <h2><i class="fas fa-cog"></i> Settings</h2>
-        <button class="close-btn" id="closeSettingsBtn">
-          <i class="fas fa-times"></i>
-        </button>
+        <h2 id="settingsTitle">Settings</h2>
+        <button class="close-btn" id="closeSettingsBtn" aria-label="Close settings">&times;</button>
       </div>
       <div class="modal-body">
-        <div class="settings-group">
-          <label for="defaultTargetInput"><i class="fas fa-bullseye"></i> Default Target</label>
-          <input 
-            type="text" 
-            id="defaultTargetInput" 
-            class="settings-input" 
-            value="10.1.49.92"
-          >
-          <small>This target will be pre-filled when you open the application</small>
-        </div>
-
-        <div class="settings-group">
-          <label><i class="fas fa-moon"></i> Theme</label>
-          <div class="theme-options">
-            <label class="radio-option">
-              <input type="radio" name="theme" value="light">
-              <span>Light</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="theme" value="dark">
-              <span>Dark</span>
-            </label>
-            <label class="radio-option">
-              <input type="radio" name="theme" value="auto">
-              <span>Auto</span>
-            </label>
-          </div>
-        </div>
-
-        <div class="settings-group">
-          <label><i class="fas fa-sliders-h"></i> Nmap Path</label>
-          <input 
-            type="text" 
-            class="settings-input" 
-            placeholder="Leave empty for default"
-            disabled
-          >
-          <small>Configured on server side</small>
-        </div>
+        <label for="defaultTargetInput">Default Target:</label>
+        <input type="text" id="defaultTargetInput" class="settings-input" value="10.1.49.92" />
+        <p class="small-note">Default target saved in browser localStorage.</p>
       </div>
       <div class="modal-footer">
         <button class="btn secondary" id="cancelSettingsBtn">Cancel</button>
-        <button class="btn primary" id="saveSettingsBtn">
-          <i class="fas fa-check"></i> Save Settings
-        </button>
+        <button class="btn primary" id="saveSettingsBtn">Save</button>
       </div>
     </div>
   </div>
 
   <!-- Help Modal -->
-  <div class="modal" id="helpModal">
-    <div class="modal-overlay"></div>
+  <div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="helpTitle">
     <div class="modal-content">
       <div class="modal-header">
-        <h2><i class="fas fa-question-circle"></i> Help & Documentation</h2>
-        <button class="close-btn" id="closeHelpBtn">
-          <i class="fas fa-times"></i>
-        </button>
+        <h2 id="helpTitle">Help</h2>
+        <button class="close-btn" id="closeHelpBtn" aria-label="Close help">&times;</button>
       </div>
       <div class="modal-body">
-        <div class="help-section">
-          <h3>📖 Overview</h3>
-          <p>Nmap GUI is a professional web-based network scanning tool that provides an intuitive interface for Nmap operations with advanced analysis capabilities.</p>
-        </div>
-
-        <div class="help-section">
-          <h3>🎯 Scan Modes Explained</h3>
-          <ul>
-            <li><strong>Ping Scan (-sn):</strong> Discovers active hosts without port scanning</li>
-            <li><strong>Quick Scan (--top-ports 200):</strong> Scans the 200 most common ports</li>
-            <li><strong>Full TCP Scan (-p-):</strong> Scans all 65,535 TCP ports (time-intensive)</li>
-            <li><strong>Service Detection (-sV):</strong> Identifies services and versions running on open ports</li>
-            <li><strong>OS Detection (-O):</strong> Attempts to determine the target operating system</li>
-            <li><strong>NSE Scripts (-sC):</strong> Runs default NSE scripts for deeper analysis</li>
-          </ul>
-        </div>
-
-        <div class="help-section">
-          <h3>💡 Best Practices</h3>
-          <ul>
-            <li>Start with Ping scan for host discovery</li>
-            <li>Use Quick scan for initial reconnaissance</li>
-            <li>Run Full scan only when necessary (very time-consuming)</li>
-            <li>Always have authorization before scanning targets</li>
-            <li>Export results for documentation and analysis</li>
-            <li>Use filters to focus on specific ports or services</li>
-          </ul>
-        </div>
-
-        <div class="help-section">
-          <h3>⚙️ Advanced Tips</h3>
-          <ul>
-            <li>Root/Admin privileges required for SYN scans (-sS)</li>
-            <li>OS detection works better with root privileges</li>
-            <li>CSV exports can be analyzed in spreadsheet applications</li>
-            <li>XML files preserve all scan details for future reference</li>
-            <li>Scan history persists in browser storage</li>
-          </ul>
-        </div>
-
-        <div class="help-section">
-          <h3>📞 Support</h3>
-          <p>For issues, feature requests, or bug reports, visit the <a href="https://github.com/anyahritvik/nmap-gui-nodejs" target="_blank">GitHub Repository</a></p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn primary" id="closeHelpBtnFooter">
-          <i class="fas fa-check"></i> Got It
-        </button>
+        <h4>Nmap GUI Professional Edition</h4>
+        <ul>
+          <li><strong>Targets:</strong> Enter CSV or IP/domain targets to scan.</li>
+          <li><strong>Scan Types:</strong> Ping, Quick, Full TCP, SvcDetect, OS Detect, NSE.</li>
+          <li><strong>Filter:</strong> Use the filter input to search results in the ports table.</li>
+          <li><strong>Export:</strong> Save results as XML or CSV from the quick actions.</li>
+          <li><strong>History:</strong> Click a history item to reload its results.</li>
+        </ul>
+        <p class="small-note">Requires nmap installed and available in system PATH.</p>
       </div>
     </div>
   </div>
 
-  <script src="/js/app.js"></script>
+  <script src="/js/app.js" defer></script>
 </body>
 </html>
