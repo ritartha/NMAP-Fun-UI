@@ -13,7 +13,7 @@
     <header class="app-header" role="banner">
       <div class="header-left">
         <h1 class="app-title" title="Nmap GUI — Professional Web Edition">🗺️ Nmap GUI — Professional</h1>
-        <p class="app-subtitle">Modern interface for nmap — quick scans, service detection, OS fingerprinting</p>
+        <p class="app-subtitle">Fast, friendly network scanning — quick scans, service detection, OS fingerprinting</p>
       </div>
 
       <div class="header-right" role="navigation" aria-label="Global actions">
@@ -50,11 +50,11 @@
               aria-label="Targets"
             >
             <div class="control-right">
-              <button class="btn small" id="saveXmlBtn" title="Save last XML">💾</button>
-              <button class="btn small" id="exportCsvBtn" title="Export ports to CSV">📊</button>
-              <button class="btn small" id="copyResultsBtn" title="Copy results">📋</button>
-              <button class="btn small" id="openFolderBtn" title="Open output folder">📁</button>
-              <button class="btn small" id="rerunBtn" title="Re-run last scan">🔄</button>
+              <button class="btn small" id="saveXmlBtn" title="Save last XML" aria-label="Save last XML">💾</button>
+              <button class="btn small" id="exportCsvBtn" title="Export ports to CSV" aria-label="Export CSV">📊</button>
+              <button class="btn small" id="copyResultsBtn" title="Copy results" aria-label="Copy Results">📋</button>
+              <button class="btn small" id="openFolderBtn" title="Open output folder" aria-label="Open output folder">📁</button>
+              <button class="btn small" id="rerunBtn" title="Re-run last scan" aria-label="Re-run">🔄</button>
             </div>
           </div>
         </div>
@@ -84,7 +84,7 @@
             <div class="summary-item">
               <div class="summary-text">
                 <div id="macLabel" class="summary-line">MAC: -</div>
-                <div class="summary-sub">Vendor: -</div>
+                <div class="summary-sub" id="macVendor">Vendor: -</div>
               </div>
             </div>
 
@@ -163,7 +163,25 @@
             <p class="history-empty">No scans yet</p>
           </div>
           <div class="history-actions">
-            <button class="btn full" id="clearHistoryBtn" title="Clear history">🗑️ Clear History</button>
+            <button class="btn full ghost" id="clearHistoryBtn" title="Clear history">🗑️ Clear History</button>
+          </div>
+
+          <!-- GitHub Card -->
+          <div class="github-card" aria-label="Project and author details">
+            <div class="gh-header">
+              <div class="gh-avatar" aria-hidden="true">RC</div>
+              <div class="gh-info">
+                <div class="gh-name">Ritartha Chaki</div>
+                <div class="gh-sub">@ritartha / NMAP-Fun-UI</div>
+              </div>
+            </div>
+            <p class="gh-desc">Professional Nmap GUI — web edition. Feedback welcome.</p>
+            <div class="gh-actions">
+              <a class="btn github primary" href="https://github.com/ritartha" target="_blank" rel="noopener" aria-label="Open GitHub profile">View Profile</a>
+              <a class="btn github" href="https://github.com/ritartha/NMAP-Fun-UI" target="_blank" rel="noopener" aria-label="Open repository">@ritartha/NMAP-Fun-UI</a>
+              <a class="btn github ghost" href="mailto:ritartha@gmail.com" aria-label="Send email">Email</a>
+            </div>
+            <div class="gh-footer small-note">Contact: <a href="mailto:ritartha@gmail.com">ritartha@gmail.com</a></div>
           </div>
         </div>
       </aside>
